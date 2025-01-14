@@ -72,7 +72,7 @@ public class LogDataAccess {
      * @return CSVファイルに書き込むためのフォーマット
      */
     private String createLine(Log log) {
-        return log.getTaskCode() + "," + log.getChangeUserCode() + "," + 0 + "," + log.getChangeDate();
+        return log.getTaskCode() + "," + log.getChangeUserCode() + "," + log.getStatus() + "," + log.getChangeDate();
     }
 
 }

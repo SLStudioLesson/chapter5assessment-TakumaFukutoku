@@ -82,20 +82,22 @@ public class TaskLogic {
      */
     public void save(int code, String name, int repUserCode,
                     User loginUser) throws AppException {
-        User user = userDataAccess.findByCode(code);
         
-        Task task = new Task(code, name, repUserCode, loginUser);
-        if (user == null) {
+        User repUser = userDataAccess.findByCode(repUserCode);
+
+        if (repUser == null) {
             throw new AppException("存在するユーザーコードを入力してください");
         }
+
+        Task task = new Task(code, name, repUserCode, repUser);
+
         taskDataAccess.save(task);
 
-        Log log = new Log(code, loginUser.getCode(), 0, LocalDate.now());
+        Log log = new Log(code, loginUser.getCode(), repUserCode,LocalDate.now());
         logDataAccess.save(log);
-        
-        System.out.println( name + "の登録が完了しました。");
-    }
 
+        System.out.println(name + "の登録が完了しました。");
+    }
     /**
      * タスクのステータスを変更します。
      *
@@ -107,9 +109,25 @@ public class TaskLogic {
      * @param loginUser ログインユーザー
      * @throws AppException タスクコードが存在しない、またはステータスが前のステータスより1つ先でない場合にスローされます
      */
-    // public void changeStatus(int code, int status,
-    //                         User loginUser) throws AppException {
-    // }
+    public void changeStatus(int code, int status,
+                            User loginUser) throws AppException {
+        Task taskCode = taskDataAccess.findByCode(code);
+
+        if (taskCode == null) {
+            throw new AppException("存在するタスクコードを入力してください");
+        }
+
+        if (status != (taskCode.getStatus() + 1)) {
+            throw new AppException("ステータスは、前のステータスより1つ先のもののみを選択してください");
+        }
+
+        taskCode.setStatus(loginUser.getCode());
+        taskDataAccess.update(taskCode);
+
+        Log log = new Log(code, loginUser.getCode(), status, LocalDate.now());
+        logDataAccess.save(log);
+        System.out.println("ステータスの変更が完了しました。");
+    }
 
     /**
      * タスクを削除します。
