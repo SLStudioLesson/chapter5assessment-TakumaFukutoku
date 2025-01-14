@@ -66,6 +66,7 @@ public class TaskUI {
                         System.out.println();
                         break;
                     case "2":
+                        inputNewInformation();
                         break;
                     case "3":
                         System.out.println("ログアウトしました。");
@@ -115,8 +116,43 @@ public class TaskUI {
      * @see #isNumeric(String)
      * @see com.taskapp.logic.TaskLogic#save(int, String, int, User)
      */
-    // public void inputNewInformation() {
-    // }
+    public void inputNewInformation() {
+        boolean flg = true;
+        while (flg) {
+            try {
+                System.out.print("タスクコードを入力してください：");
+                String code = reader.readLine();
+                if (!isNumeric(code)) {
+                    System.out.println("半角の整数で入力してください");
+                    System.out.println();
+                    continue;
+                }
+
+                System.out.print("タスク名を入力してください：");
+                String name = reader.readLine();
+                if (!(name.length() <= 10)) {
+                    System.out.println("タスク名は10文字以内で入力してください");
+                    System.out.println();
+                    continue;
+                }
+
+                System.out.print("担当するユーザーのコードを選択してください：");
+                String repUserCode = reader.readLine();
+                if (!isNumeric(repUserCode)) {
+                    System.out.println("半角の整数で入力してください");
+                    System.out.println();
+                    continue;
+                }
+                taskLogic.save(0, name, 0, loginUser);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (AppException e) {
+                e.getMessage();
+            }
+            
+            flg = false;
+        }
+    }
 
     /**
      * タスクのステータス変更または削除を選択するサブメニューを表示します。
@@ -152,7 +188,15 @@ public class TaskUI {
      * @param inputText 判定する文字列
      * @return 数値であればtrue、そうでなければfalse
      */
-    // public boolean isNumeric(String inputText) {
-    //     return false;
-    // }
+    public boolean isNumeric(String inputText) {
+        if (inputText == null || inputText.isEmpty()) {
+            return false;
+        }
+        for (char c : inputText.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

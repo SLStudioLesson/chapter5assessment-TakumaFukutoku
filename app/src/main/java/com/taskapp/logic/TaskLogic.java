@@ -1,10 +1,13 @@
 package com.taskapp.logic;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.taskapp.dataaccess.LogDataAccess;
 import com.taskapp.dataaccess.TaskDataAccess;
 import com.taskapp.dataaccess.UserDataAccess;
+import com.taskapp.exception.AppException;
+import com.taskapp.model.Log;
 import com.taskapp.model.Task;
 import com.taskapp.model.User;
 
@@ -54,12 +57,12 @@ public class TaskLogic {
                 status = "完了";
             }
 
-            
-            if (task.getRepUser() == loginUser) {
+            User user = userDataAccess.findByCode(loginUser.getCode());
+            if (user.getName().equals(task.getRepUser().getName())) {
                 System.out.println(task.getCode() + ". " + "タスク名：" + task.getName() + ", 担当者名：" + "あなたが担当しています" + ", ステータス：" + status);
 
             } else {
-                System.out.println(task.getCode() + ". " + "タスク名：" + task.getName() + ", 担当者名：" + task.getName() +"が担当しています" + ", ステータス：" + status);
+                System.out.println(task.getCode() + ". " + "タスク名：" + task.getName() + ", 担当者名：" + task.getRepUser().getName() +"が担当しています" + ", ステータス：" + status);
             }
 
         });
@@ -77,9 +80,21 @@ public class TaskLogic {
      * @param loginUser ログインユーザー
      * @throws AppException ユーザーコードが存在しない場合にスローされます
      */
-    // public void save(int code, String name, int repUserCode,
-    //                 User loginUser) throws AppException {
-    // }
+    public void save(int code, String name, int repUserCode,
+                    User loginUser) throws AppException {
+        User user = userDataAccess.findByCode(code);
+        
+        Task task = new Task(code, name, repUserCode, loginUser);
+        if (user == null) {
+            throw new AppException("存在するユーザーコードを入力してください");
+        }
+        taskDataAccess.save(task);
+
+        Log log = new Log(code, loginUser.getCode(), 0, LocalDate.now());
+        logDataAccess.save(log);
+        
+        System.out.println( name + "の登録が完了しました。");
+    }
 
     /**
      * タスクのステータスを変更します。

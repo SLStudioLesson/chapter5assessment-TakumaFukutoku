@@ -65,9 +65,12 @@ public class UserDataAccess {
                 if (values.length != 4) continue;
 
                 int userCode = Integer.parseInt(values[0]);
+                String userName = values[1];
+                String email = values[2];
+                String password = values[3];
 
                 if (code == userCode) {
-                    return user;
+                    user = new User(userCode, userName, email, password);
                 }
             }
         } catch (IOException e) {
