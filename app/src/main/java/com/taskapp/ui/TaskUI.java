@@ -223,6 +223,8 @@ public class TaskUI {
                 
                     case "2":
                         taskLogic.changeStatus(Integer.parseInt(code), Integer.parseInt(selectnum), loginUser);
+                        break;
+                        
                     default:
                         System.out.println("ステータスは1・2の中から選択してください");
                         System.out.println();

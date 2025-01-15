@@ -126,6 +126,7 @@ public class TaskDataAccess {
                 } else {
                     line = task.getCode() + "," + task.getName() + "," + task.getStatus() + "," + task.getRepUser().getCode();
                 }
+                
                 writer.write(line);
                 writer.newLine();
             }

@@ -89,11 +89,11 @@ public class TaskLogic {
             throw new AppException("存在するユーザーコードを入力してください");
         }
 
-        Task task = new Task(code, name, repUserCode, repUser);
+        Task task = new Task(code, name, 0, repUser);
 
         taskDataAccess.save(task);
 
-        Log log = new Log(code, loginUser.getCode(), repUserCode,LocalDate.now());
+        Log log = new Log(code, loginUser.getCode(), 0,LocalDate.now());
         logDataAccess.save(log);
 
         System.out.println(name + "の登録が完了しました。");
@@ -121,7 +121,7 @@ public class TaskLogic {
             throw new AppException("ステータスは、前のステータスより1つ先のもののみを選択してください");
         }
 
-        taskCode.setStatus(loginUser.getCode());
+        taskCode.setStatus(status);
         taskDataAccess.update(taskCode);
 
         Log log = new Log(code, loginUser.getCode(), status, LocalDate.now());
